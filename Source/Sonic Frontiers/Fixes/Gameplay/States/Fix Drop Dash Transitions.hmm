@@ -1,21 +1,28 @@
-Code "Drop Dash on Slide" in "Gameplay/Skills/Sonic" by "Hyper"
+Code "Fix Drop Dash Transitions" in "Fixes/Gameplay/States" by "Hyper" does
+/*
+Fixes state transitions for the drop dash state.
+
+Notes;
+- This fixes Sonic being unable to boost, spin boost, stomp, jump or otherwise exit out of drop dash.
+*/
 //
     #include "BlackboardStatus" noemit
-
+    
     #lib "Globals"
     #lib "Player"
+
+    static bool _isInitialised = false;
 //
 {
-    if (Player.GetPlayerType() != Player.PlayerType.Sonic)
+    if (!_isInitialised)
+    {
+        Globals.Add("Fix Drop Dash Transitions", true);
+        _isInitialised = true;
+    }
+
+    if (!Globals.GetFlag("Fix Drop Dash Transitions"))
         return;
 
-    if (Player.State.GetCurrentStateID<Sonic.StateID>() == Sonic.StateID.StateSliding)
-        Player.State.SetState<Sonic.StateID>(Sonic.StateID.StateDropDash);
-
-    // Ensure the state transition fixes don't conflict with the other code.
-    if (Globals.GetFlag("Fix Drop Dash Transitions"))
-        return;
-        
     var state = Player.State.GetCurrentStateID<Sonic.StateID>();
     var isGrounded = Player.Status.IsGrounded();
 
